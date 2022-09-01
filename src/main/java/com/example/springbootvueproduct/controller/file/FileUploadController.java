@@ -27,6 +27,30 @@ public class FileUploadController {
   @ResponseBody
   public String upload(MultipartFile uploadFile, HttpServletRequest request){
 
+    String filePath = uploadFile(uploadFile, request);
+    if (filePath != null) {
+      return filePath;
+    }
+
+    return "上传失败!";
+  }
+
+  @PostMapping("/uploadFiles")
+  @ResponseBody
+  public String uploadFiles(MultipartFile[] uploadFiles, HttpServletRequest request){
+
+    String filePath = null;
+    for (MultipartFile uploadFile : uploadFiles) {
+      filePath = uploadFile(uploadFile, request);
+    }
+    if (filePath != null) {
+      return filePath;
+    }
+
+    return "上传失败!";
+  }
+
+  private String uploadFile(MultipartFile uploadFile, HttpServletRequest request) {
     String realPath = request.getSession().getServletContext().getRealPath("/uploadFile/");
     log.info("realPath: {}", realPath);
     String format = sdf.format(new Date());
@@ -45,8 +69,7 @@ public class FileUploadController {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    return "上传失败!";
+    return null;
   }
 
 }
